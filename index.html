@@ -10,6 +10,9 @@
     <script src="js/aframe.min.js"></script>
     <script src="js/aframe-ar.min.js"></script>
 	<script src="js/aframe-gui.min.js"></script>
+	  <script src="js/aframe-text-geometry-component.min.js"></script>
+	  
+	  
 	
 	<!-- This is a hack because at the time of writing there are some distortions in the provided visuals until the  -->
 	<!-- system receives a resize event. The resize event must be triggered when everything has been loaded and the  -->
@@ -110,76 +113,50 @@
       <div id="content" class="p-4 p-md-5 pt-5">
 
        
-	   
-	   		<!-- a-scene defines the scene that we are agoing to use. After arjs= there are various options that can be customized  -->
-	<!-- depending on your needs. For now just stick with these ones. -->
-	<!-- Notice that we have added a new detectionMode parameters and also a matrixCodeType one. -->
-	<!-- MatrixCodeType is 3x3 because we have created a 3x3 marker before using the online tool  -->
-    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 4x4;'>
-		 
-		  
-		  
-		  
-		 
-		 <!-- Defines the barcode marker that we are going to use. We have just to specify its code, that in this case is 2 -->
-		 <a-marker type="barcode" value="2">
-		 
-			<!-- A yellow box -->
-			<!--<a-box position='0 0.5 0' color="yellow"></a-box>-->
-			
-			
-			
-				<a-gui-flex-container
-					flex-direction="column" justify-content="center" align-items="normal" component-padding="0.1" 
-					opacity="0" width="2.5" height="0.75"
-					position="0 0.375 0" rotation="270 0 0"
-				>
-					<a-gui-button 
-						width="2.5" height="0.75"
-						onclick="red"
-						font-family="assets/fonts/PermanentMarker-Regular.ttf"
-						font-size="0.3"
-						value="Procédure 1"
-					>
-					</a-gui-button>
-					<a-gui-button 
-						width="2.5" height="0.75"
-						onclick="blue"
-						font-family="assets/fonts/PermanentMarker-Regular.ttf"
-						font-size="0.3"
-						value="Procédure 2"
-					>
-					</a-gui-button>
-					<a-gui-button 
-						width="2.5" height="0.75"
-						onclick="green"
-						font-family="assets/fonts/PermanentMarker-Regular.ttf"
-						font-size="0.3"
-						value="Procédure 3"
-					>
-					</a-gui-button>
-					<a-gui-button 
-						width="2.5" height="0.75"
-						onclick="green"
-						font-family="assets/fonts/PermanentMarker-Regular.ttf"
-						font-size="0.3"
-						value="Ajouter"
-					>
-					</a-gui-button>
-			
-				</a-gui-flex-container>
-			
+	 
+<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+
+	<a-assets>
+		<a-asset-item id="exoFont" src="fonts/exoBlack.typeface.json"></a-asset-item>
+		<img id="pixels" src="images/pixels.png" />
+	</a-assets>
+
+	<!-- 2D text -->
+	<a-marker type="pattern" url="data/kanji.patt">
+		
+		<!-- positioning a plane directly below text for increased visibility; need to adjust position to avoid z-fighting.  -->
+		<a-plane color="white" rotation="-90 0 0" position="0 -0.25 0" width="3" material="transparent: true; opacity: 0.90"></a-plane>
+
+		<!-- for more properties, see https://github.com/aframevr/aframe/blob/master/docs/components/text.md -->
+		<a-text value="Hello, world!" font="fonts/Exo2Bold.fnt" color="red" rotation="-90 0 0" align="center" scale="2 2 2"></a-text>
+		
+		<!-- positioning a second copy to attempt drop-shadow effect; need to adjust position to avoid z-fighting -->
+		<!-- <a-text value="Hello, world!" font="fonts/Exo2Bold.fnt" color="black" rotation="-90 0 0" align="center" scale="2 2 2" position="0.01 -0.2 0"></a-text> -->
 
 		
-		
-		
+		<!-- avoiding z-fighting is difficult; may want to render canvas to text instead -->
 
-         </a-marker>
-		 
-		 <!-- Define the camera of the scene -->
-         <a-entity camera></a-entity> 
-    </a-scene>
+	</a-marker>
 
+	<!-- 3D text -->
+	<a-marker type="pattern" url="data/hiro.patt">
+
+		<!-- 
+			using aframe-text-geometry component
+			can set: bevelSize, bevelThickness, curveSegments, font, height, size, style, value.
+			alignment (centering) may be tricky; try calculating bounding box and repositioning.
+			for more info, see: https://www.npmjs.com/package/aframe-text-geometry-component
+		 -->
+		<a-entity text-geometry="value: Hello, world!; font: #exoFont;"
+			material="color: yellow; src: #pixels; repeat: 0.5 0.5;" 
+			rotation="-90 0 0">
+		</a-entity>
+
+	</a-marker>
+
+    <a-entity camera></a-entity>
+    
+</a-scene>
 		
 		
 		
